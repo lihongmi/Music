@@ -1,0 +1,14 @@
+#Music
+------
+##---红岩移动考核题
+###相关说明：
+  找了好多录屏软件，没找到可以录屏的...
+  于是就只是截了点图。。
+  <br>进去:
+  ![](https://github.com/GavynZhang/Music/blob/master/Picture/S60515-230909.jpg)
+  更多：
+  ![](https://github.com/GavynZhang/Music/blob/master/Picture/S60515-230924.jpg)
+  <br>搜索界面：
+  ![](https://github.com/GavynZhang/Music/blob/master/Picture/S60515-231103.jpg)
+  收藏夹：
+  ![](https://github.com/GavynZhang/Music/blob/master/Picture/S60515-231232.jpg)
