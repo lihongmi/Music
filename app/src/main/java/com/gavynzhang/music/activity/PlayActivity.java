@@ -2,6 +2,7 @@ package com.gavynzhang.music.activity;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -96,7 +97,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         }
         cursor.close();
 
-        //没有，就添加
+        //没有，就添加（显示此Activity即保存至数据库--收藏夹）
         if(isSave == 0){
             saveToDb();
         }
@@ -136,8 +137,6 @@ public class PlayActivity extends Activity implements View.OnClickListener{
             }while(cursor.moveToNext());
         }
         cursor.close();
-
-
     }
 
     //用于将song保存到数据库
@@ -161,8 +160,10 @@ public class PlayActivity extends Activity implements View.OnClickListener{
     //用于判断暂停还是播放状态
     int pause = 1;
 
+    /*
+    * 获取当前播放歌曲在List中的位置
+    * **/
     protected int getNowIsWhereInDb(){
-
         mHelper = new SongDatabaseHelper(PlayActivity.this,"SongData.db", null,1);
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("Song", null, null, null, null, null, null);
