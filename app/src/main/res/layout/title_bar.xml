@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@color/toolbar_item_color"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <ImageView
+        android:src="@mipmap/right_point"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+    <TextView
+        android:text="今日热门"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/search_Btn"
+        android:src="@mipmap/search"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="235dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp" />
+
+</LinearLayout>

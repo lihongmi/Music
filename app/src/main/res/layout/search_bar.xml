@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+    <EditText
+        android:id="@+id/search_text"
+        android:hint="歌手或歌名"
+        android:layout_marginTop="7dp"
+        android:layout_weight="10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/search"
+        android:text="搜索"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
