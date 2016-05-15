@@ -49,7 +49,6 @@ public class PlayActivity extends Activity implements View.OnClickListener{
     ImageView before;
     ImageView next;
 
-    //ImageView playItem;
     ImageView playDownload;
 
     SeekBar seekBar;
@@ -85,6 +84,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("Song", null, null, null, null, null, null);
 
+        //判断数据库中是否已有此歌曲，有则不添加
         int isSave = 0;
         if(cursor.moveToFirst()){
             do {
@@ -96,26 +96,27 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         }
         cursor.close();
 
+        //没有，就添加
         if(isSave == 0){
             saveToDb();
         }
 
+        //设置专辑封面，歌手歌名，初始化MediaPlayer
         setData(song);
         initMediaPlayer(song);
 
         SQLiteDatabase db1 = mHelper.getWritableDatabase();
         Cursor cursor1 = db1.query("Song", null, null, null, null, null, null);
 
-        int j = 0;
+        //List<Song> savedSongs初始化
         if(cursor1.moveToFirst()){
             do {
                 savedSongs.add(new Song());
-                j++;
             }while(cursor1.moveToNext());
         }
         cursor1.close();
-        //Toast.makeText(PlayActivity.this,"  "+j,Toast.LENGTH_SHORT).show();
 
+        //将数据库中的数据保存为List<Song>，用于切换下一曲等
         Cursor cursor2 = db1.query("Song", null, null, null, null, null, null);
         int i = 0;
         if(cursor2.moveToFirst()){
@@ -139,6 +140,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
 
     }
 
+    //用于将song保存到数据库
     public void saveToDb(){
         dbHelper = new SongDatabaseHelper(this,"SongData.db",null,1);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -156,9 +158,10 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         values.clear();
     }
 
+    //用于判断暂停还是播放状态
     int pause = 1;
 
-    public void onClick(View v){
+    protected int getNowIsWhereInDb(){
 
         mHelper = new SongDatabaseHelper(PlayActivity.this,"SongData.db", null,1);
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -174,13 +177,20 @@ public class PlayActivity extends Activity implements View.OnClickListener{
             }while(cursor.moveToNext());
         }
         cursor.close();
+        return i;
+    }
+
+    public void onClick(View v){
+
+        int i = getNowIsWhereInDb();
 
         switch (v.getId()){
+            //退出
             case R.id.play_back:
                 finish();
                 break;
+            //播放，暂停
             case R.id.play_big_btn:
-//                Toast.makeText(PlayActivity.this,"play touched",Toast.LENGTH_SHORT).show();
                 if(pause == 1) {
                     mPlayer.start();
                     playBigBtn.setImageResource(R.mipmap.pause);
@@ -191,6 +201,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
                     pause = 1;
                 }
                 break;
+            //上一曲
             case R.id.before:
                 try {
                     if (i >= 0) {
@@ -203,13 +214,17 @@ public class PlayActivity extends Activity implements View.OnClickListener{
                     e.printStackTrace();
                 }
                 break;
-            case R.id.next:
+
+            case R.id.next:     //无法实现下一曲
                 try {
-//                    Toast.makeText(PlayActivity.this," savedSongs.size()"+savedSongs.size()+" "+i,Toast.LENGTH_SHORT).show();
                     Song song2 = savedSongs.get(i+1);
                     setData(song2);
+                    mPlayer.stop();
                     mPlayer.release();
-                    initMediaPlayer(song2);
+                    mPlayer.setDataSource(song2.getPlayUrl());
+                    mPlayer.prepareAsync();
+                    mPlayer.stop();
+                    //initMediaPlayer(song2);
                     mPlayer.start();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -221,6 +236,9 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    /**
+     * 设置界面数据
+     * */
     private void setData(Song song){
 
         RequestQueue mQueue = Volley.newRequestQueue(PlayActivity.this);
@@ -243,23 +261,10 @@ public class PlayActivity extends Activity implements View.OnClickListener{
 
     }
 
-//    class MySeekbar implements SeekBar.OnSeekBarChangeListener {
-//        public void onProgressChanged(SeekBar seekBar, int progress,
-//                                      boolean fromUser) {
-//        }
-//
-//        public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//        }
-//
-//        public void onStopTrackingTouch(SeekBar seekBar) {
-//            mPlayer.seekTo(seekbar.getProgress());
-//            isChanging=false;
-//        }
-//
-//    }
-
-
+    /**
+     * 初始化音乐
+     *
+     * */
     private void initMediaPlayer(Song song) {
         try {
             mPlayer.setDataSource(song.getPlayUrl());

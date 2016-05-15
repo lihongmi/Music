@@ -44,6 +44,7 @@ public class SavedList extends Activity {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor1 = db.query("Song", null, null, null, null, null, null);
 
+        //Song数组初始化
         int j = 0;
         if(cursor1.moveToFirst()){
             do {
@@ -54,6 +55,7 @@ public class SavedList extends Activity {
         cursor1.close();
         Toast.makeText(SavedList.this,"  "+j,Toast.LENGTH_SHORT).show();
 
+        //加载数据
         Cursor cursor = db.query("Song", null, null, null, null, null, null);
         int i = 0;
         if(cursor.moveToFirst()){
@@ -65,7 +67,6 @@ public class SavedList extends Activity {
                     String singerName = cursor.getString(cursor.getColumnIndex("singername"));
                     String picSmallUrl = cursor.getString(cursor.getColumnIndex("picsmallurl"));
                     String playUrl = cursor.getString(cursor.getColumnIndex("playurl"));
-//                    Toast.makeText(SavedList.this,downUrl,Toast.LENGTH_SHORT).show();
                     savedSongs.get(i).setData(songName, singerName, picBigUrl, picSmallUrl, downUrl, playUrl);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -73,18 +74,21 @@ public class SavedList extends Activity {
                 i++;
             }while(cursor.moveToNext());
         }
-        Toast.makeText(SavedList.this," "+i,Toast.LENGTH_SHORT).show();
         cursor.close();
 
         if(savedSongs.size() == 0) {
             Toast.makeText(SavedList.this, "无收藏", Toast.LENGTH_SHORT).show();
         }
 
+        //RecyclerView
         savedList = (RecyclerView)findViewById(R.id.saved_song_recyclerview);
         initData(savedSongs);
 
     }
 
+    /**
+     *  加载数据
+     * */
     private void initData(List<Song> song) {
         savedList.setLayoutManager(new LinearLayoutManager(SavedList.this));
         savedList.setAdapter(new SongAdapter(song));
@@ -113,11 +117,8 @@ public class SavedList extends Activity {
             final Song songData = song.get(position);
 
             RequestQueue mQueue = Volley.newRequestQueue(SavedList.this);
-
             ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
-
             ImageLoader.ImageListener listener = ImageLoader.getImageListener(vh.getAlbumImage(), R.mipmap.loading, R.mipmap.fail);
-
             try {
                 vh.getSongName().setText(songData.getSongName());
                 vh.getSingerName().setText(songData.getSingerName());
@@ -126,6 +127,9 @@ public class SavedList extends Activity {
                 e.printStackTrace();
             }
 
+            /**
+             * 设置监听，启动PlayActivity
+             * */
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,6 +178,9 @@ public class SavedList extends Activity {
 
     }
 
+    /**
+     *  图片数据缓存
+     * */
     public class BitmapCache implements ImageLoader.ImageCache {
 
         private LruCache<String, Bitmap> mCache;

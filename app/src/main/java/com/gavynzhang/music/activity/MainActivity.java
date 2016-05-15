@@ -97,7 +97,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     TextView hot;
 
     ImageView search_btn;
-    ImageView playBtn;
 
     EditText keyword;
     Button search;
@@ -169,6 +168,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    /**
+     * 加载数据
+     * */
     private void initData(List<Song> song) {
         topSongRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         topSongRecyclerView.setAdapter(new SongAdapter(song));
@@ -195,14 +197,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             SongViewHolder vh = (SongViewHolder)holder;
 
+            //取出song对象
             final Song songData = song.get(position);
 
+            /**
+             *  使用Volley中的ImageLoader进行异步网络图片加载
+             * */
             RequestQueue mQueue = Volley.newRequestQueue(MainActivity.this);
-
             ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
-
             ImageLoader.ImageListener listener = ImageLoader.getImageListener(vh.getAlbumImage(), R.mipmap.loading, R.mipmap.fail);
-
             try {
                 vh.getSongName().setText(songData.getSongName());
                 vh.getSingerName().setText(songData.getSingerName());
@@ -211,6 +214,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
 
+            /**
+             *  设置监听事件，暂未实现对于每个item中控件的点击事件
+             * */
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -259,6 +265,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    /**
+     *      图片缓存
+     * */
     public class BitmapCache implements ImageLoader.ImageCache {
 
         private LruCache<String, Bitmap> mCache;
@@ -524,7 +533,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 topSongRecyclerView.setVisibility(View.VISIBLE);
                 break;
 
-            case R.id.fab:
+            case R.id.fab:      //启动收藏夹（activity）
 
                 Intent intent = new Intent(MainActivity.this,SavedList.class);
                 startActivity(intent);
@@ -564,6 +573,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 设置组件可见性
+     * */
     public void onBackPressed(){
         if(searchBarR.getVisibility() == View.VISIBLE){
             searchBarR.setVisibility(View.GONE);
