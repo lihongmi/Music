@@ -130,14 +130,14 @@ public class SavedList extends Activity {
                 e.printStackTrace();
             }
 
-//            vh.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(SavedList.this,PlayActivity.class);
-//                    intent.putExtra("song",songData);
-//                    startActivity(intent);
-//                }
-//            });
+            vh.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SavedList.this,PlayActivity.class);
+                    intent.putExtra("song",songData);
+                    startActivity(intent);
+                }
+            });
 
         }
 

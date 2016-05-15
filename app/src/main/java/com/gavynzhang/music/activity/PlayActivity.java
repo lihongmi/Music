@@ -25,6 +25,8 @@ import com.gavynzhang.music.db.SongDatabaseHelper;
 import com.gavynzhang.music.model.Song;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by z.z.hang on 2016/5/15.
@@ -34,6 +36,8 @@ public class PlayActivity extends Activity implements View.OnClickListener{
     private SongDatabaseHelper dbHelper;
 
     private MediaPlayer mPlayer = new MediaPlayer();
+
+    public List<Song> savedSongs = new ArrayList<>();
 
     private SongDatabaseHelper mHelper;
 
@@ -83,26 +87,61 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         next.setOnClickListener(this);
         playDownload.setOnClickListener(this);
         mHelper = new SongDatabaseHelper(PlayActivity.this,"SongData.db", null,1);
-        SQLiteDatabase db1 = mHelper.getWritableDatabase();
-        Cursor cursor1 = db1.query("Song", null, null, null, null, null, null);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("Song", null, null, null, null, null, null);
 
         int isSave = 0;
-        if(cursor1.moveToFirst()){
+        if(cursor.moveToFirst()){
             do {
-                if(song.getSongName().equals(cursor1.getString(cursor1.getColumnIndex("songname")))){
+                if(song.getSongName().equals(cursor.getString(cursor.getColumnIndex("songname")))){
                     isSave = 1;
                 }
 
-            }while(cursor1.moveToNext());
+            }while(cursor.moveToNext());
         }
-        cursor1.close();
+        cursor.close();
 
         if(isSave == 0){
             saveToDb();
         }
 
-        setData();
-        initMediaPlayer();
+        setData(song);
+        initMediaPlayer(song);
+
+        SQLiteDatabase db1 = mHelper.getWritableDatabase();
+        Cursor cursor1 = db1.query("Song", null, null, null, null, null, null);
+
+        int j = 0;
+        if(cursor1.moveToFirst()){
+            do {
+                savedSongs.add(new Song());
+                j++;
+            }while(cursor1.moveToNext());
+        }
+        cursor1.close();
+        //Toast.makeText(PlayActivity.this,"  "+j,Toast.LENGTH_SHORT).show();
+
+        Cursor cursor2 = db1.query("Song", null, null, null, null, null, null);
+        int i = 0;
+        if(cursor2.moveToFirst()){
+            do{
+                try {
+                    String songName = cursor2.getString(cursor2.getColumnIndex("songname"));
+                    String picBigUrl = cursor2.getString(cursor2.getColumnIndex("picbigurl"));
+                    String downUrl = cursor2.getString(cursor2.getColumnIndex("downurl"));
+                    String singerName = cursor2.getString(cursor2.getColumnIndex("singername"));
+                    String picSmallUrl = cursor2.getString(cursor2.getColumnIndex("picsmallurl"));
+                    String playUrl = cursor2.getString(cursor2.getColumnIndex("playurl"));
+                    savedSongs.get(i).setData(songName, singerName, picBigUrl, picSmallUrl, downUrl, playUrl);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                i++;
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+
+
     }
 
     public void saveToDb(){
@@ -122,18 +161,66 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         values.clear();
     }
 
+    int pause = 1;
+
     public void onClick(View v){
+
+        mHelper = new SongDatabaseHelper(PlayActivity.this,"SongData.db", null,1);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("Song", null, null, null, null, null, null);
+
+        int i = 0;
+        if(cursor.moveToFirst()){       //获取在List中的位置（int i）
+            do {
+                if(song.getSongName().equals(cursor.getString(cursor.getColumnIndex("songname")))){
+                    break;
+                }
+                i++;
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+
         switch (v.getId()){
             case R.id.play_back:
                 finish();
                 break;
             case R.id.play_big_btn:
-                Toast.makeText(PlayActivity.this,"play touched",Toast.LENGTH_SHORT).show();
-                mPlayer.start();
+//                Toast.makeText(PlayActivity.this,"play touched",Toast.LENGTH_SHORT).show();
+                if(pause == 1) {
+                    mPlayer.start();
+                    playBigBtn.setImageResource(R.mipmap.pause);
+                    playBigBtn.setMinimumHeight(50);
+                    playBigBtn.setMinimumWidth(50);
+                    pause = 0;
+                }else if(pause == 0){
+                    mPlayer.pause();
+                    playBigBtn.setImageResource(R.mipmap.play);
+                    pause = 1;
+                }
                 break;
             case R.id.before:
+                try {
+                    if (i >= 0) {
+                        mPlayer.stop();
+                        initMediaPlayer(savedSongs.get(i - 1));
+                        setData(savedSongs.get(i - 1));
+                        mPlayer.start();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case R.id.next:
+                try {
+//                    Toast.makeText(PlayActivity.this," savedSongs.size()"+savedSongs.size()+" "+i,Toast.LENGTH_SHORT).show();
+                    Song song2 = savedSongs.get(i+1);
+                    setData(song2);
+                    mPlayer.release();
+                    initMediaPlayer(song2);
+                    mPlayer.start();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.play_download:
@@ -141,7 +228,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void setData(){
+    private void setData(Song song){
 
         RequestQueue mQueue = Volley.newRequestQueue(PlayActivity.this);
 
@@ -179,9 +266,9 @@ public class PlayActivity extends Activity implements View.OnClickListener{
 //
 //    }
 
-    private void initMediaPlayer() {
+
+    private void initMediaPlayer(Song song) {
         try {
-            Toast.makeText(PlayActivity.this,song.getPlayUrl(),Toast.LENGTH_SHORT).show();
             mPlayer.setDataSource(song.getPlayUrl());
         } catch (IOException e) {
             e.printStackTrace();
@@ -189,6 +276,7 @@ public class PlayActivity extends Activity implements View.OnClickListener{
         mPlayer.prepareAsync();
         mPlayer.stop();
     }
+
 
     @Override
     protected void onDestroy(){
