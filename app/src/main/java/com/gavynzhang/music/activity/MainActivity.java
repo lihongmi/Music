@@ -3,9 +3,7 @@ package com.gavynzhang.music.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,31 +16,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import com.gavynzhang.music.R;
-import com.gavynzhang.music.adapter.SongItemAdapter;
 import com.gavynzhang.music.model.Song;
-import com.gavynzhang.music.model.TopList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -582,7 +572,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             topSongRecyclerView.setPadding(0, 0, 0, 0);
             topSongRecyclerView.setVisibility(View.VISIBLE);
         }else{
-            topSongRecyclerView.setPadding(0,0,0,0);
+            topSongRecyclerView.setPadding(0, 0, 0, 0);
             finish();
         }
     }

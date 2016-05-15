@@ -61,14 +61,14 @@
         android:src="@mipmap/next"
         android:layout_toRightOf="@+id/play_big_btn"
         android:layout_below="@+id/albumn_big_pic"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:layout_marginLeft="35dp"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/next" />
     <ImageView
         android:src="@mipmap/before"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:layout_marginRight="35dp"
         android:layout_toLeftOf="@+id/play_big_btn"
         android:layout_below="@+id/albumn_big_pic"
@@ -80,6 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/play_big_btn"
+        android:layout_marginTop="5dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

@@ -2,7 +2,6 @@ package com.gavynzhang.music.activity;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -12,13 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.gavynzhang.music.R;
 import com.gavynzhang.music.db.SongDatabaseHelper;
@@ -189,8 +184,6 @@ public class PlayActivity extends Activity implements View.OnClickListener{
                 if(pause == 1) {
                     mPlayer.start();
                     playBigBtn.setImageResource(R.mipmap.pause);
-                    playBigBtn.setMinimumHeight(50);
-                    playBigBtn.setMinimumWidth(50);
                     pause = 0;
                 }else if(pause == 0){
                     mPlayer.pause();
